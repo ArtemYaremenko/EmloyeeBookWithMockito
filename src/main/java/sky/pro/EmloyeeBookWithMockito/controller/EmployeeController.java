@@ -18,7 +18,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/add")
-    public Employee add(@RequestParam("passportnumber") int passportNumber,
+    public Employee add(@RequestParam("passport number") int passportNumber,
                         @RequestParam("firstname") String firstName,
                         @RequestParam("lastname") String lastName,
                         @RequestParam("department") int department,
@@ -27,12 +27,12 @@ public class EmployeeController {
     }
 
     @GetMapping("/remove")
-    public Employee remove(@RequestParam("passportnumber") int passportNumber) {
+    public Employee remove(@RequestParam("passport number") int passportNumber) {
         return employeeService.removeEmployee(passportNumber);
     }
 
     @GetMapping("/find")
-    public Employee find(@RequestParam("passportnumber") int passportNumber) {
+    public Employee find(@RequestParam("passport number") int passportNumber) {
         return employeeService.findEmployee(passportNumber);
     }
 }
