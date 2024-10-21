@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import sky.pro.EmloyeeBookWithMockito.exceptions.EmployeeAlreadyAddedException;
 import sky.pro.EmloyeeBookWithMockito.exceptions.EmployeeNotFoundException;
-import sky.pro.EmloyeeBookWithMockito.exceptions.InvalidCharactersException;
+import sky.pro.EmloyeeBookWithMockito.exceptions.InvalidDataException;
 import sky.pro.EmloyeeBookWithMockito.model.Employee;
 import sky.pro.EmloyeeBookWithMockito.model.Passport;
 import sky.pro.EmloyeeBookWithMockito.service.EmployeeService;
@@ -12,6 +12,8 @@ import sky.pro.EmloyeeBookWithMockito.service.EmployeeService;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+
+import static org.springframework.util.StringUtils.capitalize;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -24,12 +26,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public String checkString(String string) {
         if (!StringUtils.isAlpha(string)) {
-            throw new InvalidCharactersException();
+            throw new InvalidDataException();
         }
         return string;
-    }
-    private String validateString(String string) {
-        return StringUtils.capitalize(string);
     }
 
     @Override
@@ -38,10 +37,13 @@ public class EmployeeServiceImpl implements EmployeeService {
                                 String lastName,
                                 int department,
                                 double salary) {
-        firstName = validateString(checkString(firstName));
-        lastName = validateString(checkString(lastName));
+        String validFirstName = capitalize(checkString(firstName));
+        String validLastName = capitalize(checkString(lastName));
+        if (passportNumber <= 0 || department <= 0 || salary <= 0) {
+            throw new InvalidDataException();
+        }
         Passport newPassport = new Passport(passportNumber);
-        Employee newEmployee = new Employee(firstName, lastName, department, salary);
+        Employee newEmployee = new Employee(validFirstName, validLastName, department, salary);
         if (employeeBook.containsKey(newPassport)) {
             throw new EmployeeAlreadyAddedException();
         }
@@ -51,6 +53,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee removeEmployee(int passportNumber) {
+        if (passportNumber <= 0) {
+            throw new InvalidDataException();
+        }
         Passport passport = new Passport(passportNumber);
         if (!employeeBook.containsKey(passport)) {
             throw new EmployeeNotFoundException();
@@ -62,6 +67,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee findEmployee(int passportNumber) {
+        if (passportNumber <= 0) {
+            throw new InvalidDataException();
+        }
         Passport passport = new Passport(passportNumber);
         if (!employeeBook.containsKey(passport)) {
             throw new EmployeeNotFoundException();

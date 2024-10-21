@@ -9,7 +9,7 @@ public interface EmployeeService {
     Employee addEmployee(int passportNumber,
                          String firstName,
                          String lastName,
-                         int depart,
+                         int department,
                          double salary);
 
     Employee removeEmployee(int passportNumber);
